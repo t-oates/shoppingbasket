@@ -1,0 +1,8 @@
+- barcode: 1
+  name: Beans
+  unit_price: 1.50
+
+- barcode: 2
+  name: Onions
+  unit_price: 0.29
+  units: kg
