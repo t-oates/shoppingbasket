@@ -9,7 +9,7 @@ from promotions import Promotions
 
 
 @dataclass
-class BasketManager:
+class Basket:
     """Keeps track of items in a shopping basket."""
 
     def __init__(self,
