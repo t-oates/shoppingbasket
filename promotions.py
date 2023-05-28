@@ -17,7 +17,7 @@ class Promotions:
         """
 
         for promotion in self.promotions:
-            for discount in promotion.calculate_discounts(items):
+            for discount in promotion.calculate(items):
                 yield promotion.name, discount
 
 
@@ -47,8 +47,11 @@ class MForN(PromotionModel):
 
     def calculate(self, items: list['BasketItem']) -> list[float]:
         eligible_items = [item for item in items
-                          if item.barcode == self.barcode]
-        unit_price = eligible_items[0].price
+                          if item.product.barcode == self.barcode]
+        if len(eligible_items) < self.m:
+            return []
+
+        unit_price = eligible_items[0].product.price
 
         # Could just do len(eligible_items) since this only applied to 'per
         # item' products, but this works if in future we have item.amount > 1
