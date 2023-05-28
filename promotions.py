@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol, Iterable
+from typing import Protocol
 
 import more_itertools
 
@@ -18,9 +18,8 @@ class Promotions:
             
         """
 
-        for promotion in self.promotions:
-            for discount in promotion.list_discounts(items):
-                yield discount
+        return [discount for promotion in self.promotions
+                for discount in promotion.list_discounts(items)]
 
 
 @dataclass

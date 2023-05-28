@@ -36,7 +36,7 @@ class Basket:
         """
 
         if self.product_db is None:
-            raise(ValueError("Cannot add from barcode without product_db."))
+            raise (ValueError("Cannot add from barcode without product_db."))
 
         product = self.product_db[barcode]
         basket_item = BasketItem(**product, amount=amount)
@@ -44,15 +44,23 @@ class Basket:
 
     def generate_invoice(self) -> 'Invoice':
         """Get an invoice for items in the basket."""
-        return Invoice(self.basket_items, self.discounts)
+        return Invoice(self.basket_items, self.promotions)
 
 
-@dataclass
 class Invoice:
     """A receipt for a shopping basket."""
 
-    basket_items: Iterable[BasketItem]
-    discounts: Iterable[BasketItem]
+    def __init__(self,
+                 basket_items: Iterable[BasketItem],
+                 promotions: Optional[Promotions] = None) -> None:
+        self.basket_items = basket_items
+        self.discounts = self.calculate_discounts(promotions)
+
+    def calculate_discounts(self, promotions: Promotions | None) -> None:
+        """Calculate the discounts for the basket."""
+        if promotions is None:
+            return []
+        return promotions.calculate_discounts(self.basket_items)
 
     @property
     def subtotal(self) -> float:
@@ -71,10 +79,10 @@ class Invoice:
 
     def to_string(self) -> str:
         """Generate an invoice for the basket."""
-        receipt = self.product_lines
+        receipt = self._get_product_lines()
 
         if self.discount_total != 0:
-            receipt += self.discount_lines
+            receipt += self._get_product_lines()
 
         receipt.append(SEPARATING_LINE)
         receipt.append([f"Total to pay", f"£{self.total:.2f}"])
@@ -102,5 +110,3 @@ class Invoice:
         discount_lines.append([f"Total savings",
                                f"£{self.discount_total:.2f}"])
         return discount_lines
-
-
