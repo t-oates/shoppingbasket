@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, Optional
 
 from tabulate import tabulate, SEPARATING_LINE
@@ -12,13 +12,9 @@ from promotions import Promotions
 class Basket:
     """Keeps track of items in a shopping basket."""
 
-    def __init__(self,
-                 product_db: Optional[ProductDB] = None,
-                 basket_items: Optional['BasketItem'] = None,
-                 promotions: Optional[Promotions] = None) -> None:
-        self.product_db = product_db
-        self.basket_items = basket_items or []
-        self.promotions = promotions
+    product_db: Optional[ProductDB] = None
+    basket_items: Optional[list[BasketItem]] = field(default_factory=list)
+    promotions: Optional[Promotions] = None
 
     def add_item(self, basket_item: 'BasketItem') -> None:
         """Add an item to the basket."""
