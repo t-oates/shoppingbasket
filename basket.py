@@ -54,42 +54,6 @@ class Invoice:
     basket_items: Iterable[BasketItem]
     discounts: Iterable[BasketItem]
 
-    def to_string(self) -> str:
-        """Generate an invoice for the basket."""
-        receipt = self.product_lines
-
-        if self.discount_total != 0:
-            receipt += self.discount_lines
-
-        receipt.append(SEPARATING_LINE)
-        receipt.append([f"Total to pay", f"£{self.total:.2f}"])
-
-        return tabulate(receipt)
-
-    @property
-    def product_lines(self) -> list[list[str]]:
-        """The lines for the products in the basket."""
-        product_lines = [['Item', 'Price'], SEPARATING_LINE]
-        product_lines += [[f"{item.description}", f"£{item.price:.2f}"]
-                          for item in self.basket_items]
-        product_lines += SEPARATING_LINE
-        product_lines += [[f"Sub-total", f"£{self.subtotal:.2f}"]]
-        return product_lines
-
-    @property
-    def discount_lines(self) -> list[list[str]]:
-        """The lines for the discounts in the basket."""
-        discount_lines = [SEPARATING_LINE, ['Savings']]
-
-        for discount in self.discounts:
-            discount_lines.append([f"{discount.name}",
-                                   f"£{discount.price:.2f}"])
-
-        discount_lines.append(SEPARATING_LINE)
-        discount_lines.append([f"Total savings",
-                               f"£{self.discount_total:.2f}"])
-        return discount_lines
-
     @property
     def subtotal(self) -> float:
         """The total price of items in the basket before discounts."""
@@ -104,3 +68,39 @@ class Invoice:
     def total(self) -> float:
         """The total price of items in the basket after discounts."""
         return self.subtotal + self.discount_total
+
+    def to_string(self) -> str:
+        """Generate an invoice for the basket."""
+        receipt = self.product_lines
+
+        if self.discount_total != 0:
+            receipt += self.discount_lines
+
+        receipt.append(SEPARATING_LINE)
+        receipt.append([f"Total to pay", f"£{self.total:.2f}"])
+
+        return tabulate(receipt)
+
+    def _get_product_lines(self) -> list[list[str]]:
+        """The lines for the products in the basket."""
+        product_lines = [['Item', 'Price'], SEPARATING_LINE]
+        product_lines += [[f"{item.description}", f"£{item.price:.2f}"]
+                          for item in self.basket_items]
+        product_lines += SEPARATING_LINE
+        product_lines += [[f"Sub-total", f"£{self.subtotal:.2f}"]]
+        return product_lines
+
+    def _get_discount_lines(self) -> list[list[str]]:
+        """The lines for the discounts in the basket."""
+        discount_lines = [SEPARATING_LINE, ['Savings']]
+
+        for discount in self.discounts:
+            discount_lines.append([f"{discount.name}",
+                                   f"£{discount.price:.2f}"])
+
+        discount_lines.append(SEPARATING_LINE)
+        discount_lines.append([f"Total savings",
+                               f"£{self.discount_total:.2f}"])
+        return discount_lines
+
+
