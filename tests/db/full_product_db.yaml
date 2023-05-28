@@ -1,6 +1,6 @@
 - barcode: 1
   name: Beans
-  unit_price: 1.50
+  unit_price: 0.50
 
 - barcode: 2
   name: Onions
