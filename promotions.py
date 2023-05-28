@@ -6,7 +6,7 @@ import more_itertools
 
 @dataclass
 class Promotions:
-    promotions: list['PromotionModel']
+    promotions: list['Promotion']
 
     def calculate_discounts(self, items: list['BasketItem']):
         """Calculate the discount for a list of items.
@@ -22,7 +22,7 @@ class Promotions:
 
 
 @dataclass
-class PromotionModel(Protocol):
+class Promotion(Protocol):
     """A discount that can be applied to a shopping basket items."""
 
     def calculate_discounts(self,
@@ -39,7 +39,7 @@ class PromotionModel(Protocol):
 
 
 @dataclass
-class MForN(PromotionModel):
+class MForN(Promotion):
     name: str
     barcode: int
     m: int
@@ -61,7 +61,7 @@ class MForN(PromotionModel):
 
 
 @dataclass
-class MForNPounds(PromotionModel):
+class MForNPounds(Promotion):
     name: str
     barcodes: set[int]
     m: int
