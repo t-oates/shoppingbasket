@@ -65,12 +65,12 @@ class Invoice:
     @property
     def subtotal(self) -> float:
         """The total price of items in the basket before discounts."""
-        return sum(item.price for item in self.basket_items)
+        return sum(item.line_price for item in self.basket_items)
 
     @property
     def discount_total(self) -> float:
         """The total price of discounts in the basket."""
-        return sum(discount.price for discount in self.discounts)
+        return sum(discount.line_price for discount in self.discounts)
 
     @property
     def total(self) -> float:
@@ -92,7 +92,7 @@ class Invoice:
     def _get_product_lines(self) -> list[list[str]]:
         """The lines for the products in the basket."""
         product_lines = [['Item', 'Price'], SEPARATING_LINE]
-        product_lines += [[f"{item.description}", f"£{item.price:.2f}"]
+        product_lines += [[f"{item.description}", f"£{item.line_price:.2f}"]
                           for item in self.basket_items]
         product_lines += SEPARATING_LINE
         product_lines += [[f"Sub-total", f"£{self.subtotal:.2f}"]]
@@ -104,7 +104,7 @@ class Invoice:
 
         for discount in self.discounts:
             discount_lines.append([f"{discount.name}",
-                                   f"£{discount.price:.2f}"])
+                                   f"£{discount.line_price:.2f}"])
 
         discount_lines.append(SEPARATING_LINE)
         discount_lines.append([f"Total savings",

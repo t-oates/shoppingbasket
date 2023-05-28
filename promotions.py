@@ -79,7 +79,7 @@ class MForNPounds(Promotion):
         items_in_promotion = self.get_eligible_items(items)
 
         # Apply to most expensive products first, for happy customers.
-        items_in_promotion.sort(reverse=True, key=lambda item: item.price)
+        items_in_promotion.sort(reverse=True, key=lambda item: item.line_price)
 
 
         discounts = []
@@ -87,7 +87,7 @@ class MForNPounds(Promotion):
             if len(items) < self.m:
                 break
 
-            items_subtotal = sum(item.price for item in items)
+            items_subtotal = sum(item.line_price for item in items)
             discount_amount = items_subtotal - self.n
             if discount_amount > 0:
                 discounts.append(BasketItem(self.name, discount_amount, amount=-1))

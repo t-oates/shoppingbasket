@@ -23,6 +23,6 @@ class BasketItem:
         return desc
 
     @property
-    def price(self) -> float:
+    def line_price(self) -> float:
         """The price of the item."""
         return round(self.unit_price * self.amount, 2)

@@ -12,4 +12,4 @@ class TestBasketItem:
         ]
     )
     def test_price(self, basket_item, expected_price):
-        assert basket_item.price == expected_price
+        assert basket_item.line_price == expected_price
