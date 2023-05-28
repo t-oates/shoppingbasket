@@ -46,23 +46,6 @@ class BasketManager:
         """Get an invoice for items in the basket."""
         return Invoice(self.basket_items, self.discounts)
 
-    @property
-    def subtotal(self) -> float:
-        """The total price of items in the basket before discounts."""
-        return sum(item.price for item in self.basket_items)
-
-    @property
-    def discounts(self):
-        return list(self.promotions.calculate_discounts(self.basket_items))
-
-    @property
-    def discount_total(self) -> float:
-        return sum(discount.price for discount in self.discounts)
-
-    @property
-    def total(self) -> float:
-        return self.subtotal + self.discount_total
-
 
 @dataclass
 class Invoice:
