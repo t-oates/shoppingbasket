@@ -10,7 +10,7 @@ from basket_item import BasketItem
 class Promotions:
     promotions: list['Promotion']
 
-    def calculate_discounts(self, items: list['BasketItem']):
+    def list_discounts(self, items: list['BasketItem']):
         """Calculate the discount for a list of items.
         
         Args:
