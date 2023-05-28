@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import NamedTuple, Iterable
 
+from tabulate import tabulate, SEPARATING_LINE
+
 from product_db import Product, ProductDB
-from promotions import PromotionModel, Promotions
+from promotions import Promotions
 
 
 class BasketManager:
@@ -35,26 +37,29 @@ class BasketManager:
     def print_receipt(self) -> None:
         """Print a receipt for the items in the basket."""
 
-        receipt = ""
+        receipt = []
         for item in self.basket_items:
             receipt_line = item.to_receipt_line()
-            receipt += (f"\n{receipt_line.description}\t\t\t\t"
-                        f"£{receipt_line.price:.2f}")
-
-        receipt += "\n-------------------------"
-        receipt += f"\nSubtotal\t\t\t£{self.subtotal:.2f}"
+            receipt.append([f"{receipt_line.description}",
+                            f"£{receipt_line.price:.2f}"])
+        receipt.append(SEPARATING_LINE)
+        receipt.append([f"Sub-total", f"£{self.subtotal:.2f}"])
 
         if self.discount_total > 0:
-            receipt += "\n-------------------------"
-            receipt += "\nSavings:"
+            receipt.append(SEPARATING_LINE)
+            receipt.append(["Savings"])
+            receipt.append(SEPARATING_LINE)
+
             for name, discount_amount in self.discounts:
-                receipt += f"\n{name}\t\t\t£-{discount_amount:.2f}"
-            receipt += f"\nTotal savings\t\t\t£-{self.discount_total:.2f}"
+                receipt.append([f"{name}", f"£-{discount_amount:.2f}"])
 
-        receipt += "\n-------------------------"
-        receipt += f"\nTotal\t\t\t\t£{self.total:.2f}"
+            receipt.append(SEPARATING_LINE)
+            receipt.append([f"Total savings", f"£-{self.discount_total:.2f}"])
 
-        print(receipt)
+        receipt.append(SEPARATING_LINE)
+        receipt.append([f"Total to pay", f"£{self.total:.2f}"])
+
+        print(tabulate(receipt, headers=['Item', 'Price']))
 
     @property
     def subtotal(self) -> float:
