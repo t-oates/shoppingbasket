@@ -1,19 +1,35 @@
 from dataclasses import dataclass
 
-from product_db import Product
+from product_db import Product, ProductDB
 
 
 class BasketManager:
-    def __init__(self, product_db) -> None:
+    """Keeps track of items in a shopping basket.
+
+    Attributes:
+        product_db: The product database.
+        basket_items: A list of BasketItems.
+    """
+
+    def __init__(self, product_db: ProductDB) -> None:
         self.product_db = product_db
         self.basket_items = []
 
     def add_item(self, barcode: int, amount: float = 1.0) -> None:
+        """Add an item to the basket.
+
+        Args:
+            barcode: The barcode of the item to add.
+            amount: The amount of the item to add. Defaults to 1.0.
+        """
+
         product = self.product_db[barcode]
         basket_item = BasketItem(product, amount)
         self.basket_items.append(basket_item)
 
     def print_receipt(self) -> None:
+        """Print a receipt for the items in the basket."""
+
         receipt = ""
         for item in self.basket_items:
             receipt += item.to_receipt_string() + "\n"
@@ -23,15 +39,24 @@ class BasketManager:
 
     @property
     def subtotal(self) -> float:
+        """The total price of items in the basket before discounts."""
         return sum(item.price for item in self.basket_items)
 
 
 @dataclass
 class BasketItem:
+    """An item in a shopping basket.
+
+    Attributes:
+        product: The product.
+        amount: The amount of the product.
+    """
+
     product: Product
     amount: float = 1.0
 
     def to_receipt_string(self) -> str:
+        """Get a string representation of the item for a receipt."""
         price_gbp = f"£{self.price:.2f}"
         receipt_string = f"{self.product.name:<20}{price_gbp}"
 
@@ -46,4 +71,5 @@ class BasketItem:
 
     @property
     def price(self) -> float:
+        """The price of the item."""
         return round(self.product.unit_price * self.amount, 2)
