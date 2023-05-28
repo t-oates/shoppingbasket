@@ -56,11 +56,11 @@ class Invoice:
         self.basket_items = basket_items
         self.discounts = self.calculate_discounts(promotions)
 
-    def calculate_discounts(self, promotions: Promotions | None) -> None:
+    def calculate_discounts(self, promotions: Promotions | None) -> list[BasketItem]:
         """Calculate the discounts for the basket."""
         if promotions is None:
             return []
-        return promotions.calculate_discounts(self.basket_items)
+        return promotions.list_discounts(self.basket_items)
 
     @property
     def subtotal(self) -> float:
