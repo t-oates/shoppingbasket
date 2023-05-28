@@ -3,19 +3,19 @@ from dataclasses import dataclass
 from product_db import Product
 
 
-class TillManager:
+class BasketManager:
     def __init__(self, product_db) -> None:
         self.product_db = product_db
-        self.till_items = []
+        self.basket_items = []
 
     def add_item(self, barcode: int, amount: float = 1.0) -> None:
         product = self.product_db[barcode]
-        till_item = TillItem(product, amount)
-        self.till_items.append(till_item)
+        basket_item = BasketItem(product, amount)
+        self.basket_items.append(basket_item)
 
     def print_receipt(self) -> None:
         receipt = ""
-        for item in self.till_items:
+        for item in self.basket_items:
             receipt += item.to_receipt_string() + "\n"
         receipt += "----\t\t\t\t-----\n"
         receipt += f"Subtotal\t\t\t\t£{self.subtotal:.2f}"
@@ -23,11 +23,11 @@ class TillManager:
 
     @property
     def subtotal(self) -> float:
-        return sum(item.price for item in self.till_items)
+        return sum(item.price for item in self.basket_items)
 
 
 @dataclass
-class TillItem:
+class BasketItem:
     product: Product
     amount: float = 1.0
 
