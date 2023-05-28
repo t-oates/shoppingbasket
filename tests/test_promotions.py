@@ -19,7 +19,7 @@ class TestMForNPoundsSingle:
         """Test that the discount is calculated correctly when the number of
         eligible items is not an exact multiple of m."""
         basket_barcodes = [1, 4, 6, 4, 4, 7, 4, 5, 4]  # 5 cokes
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         discount_amounts = list(self.discount.calculate(basket_items))
@@ -29,7 +29,7 @@ class TestMForNPoundsSingle:
         """Test that the discount is calculated correctly when the number of
         eligible items is an exact multiple of m."""
         basket_barcodes = [1, 4, 6, 4, 4, 7, 4, 5, 4, 4]  # 6 cokes
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         discount_amounts = list(self.discount.calculate(basket_items))
@@ -44,7 +44,7 @@ class TestMForNPoundsGroup:
         """Test that the discount is calculated correctly when the number of
         eligible items is not an exact multiple of m."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 8, 8, 8, 2, 6, 7]
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         discount_amounts = list(self.discount.calculate(basket_items))
@@ -60,7 +60,7 @@ class TestMForNPoundsGroup:
         """Test that the discount is calculated correctly when the number of
         eligible items is an exact multiple of m."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 8, 8, 8, 2, 6]
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         # sorted eligible barcodes by price (desc): [6, 6, 7, 8, 8, 8]
@@ -75,7 +75,7 @@ class TestMForNPoundsGroup:
         """Test that the discount is not applied when there are not enough
         eligible items."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 2]
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         discount_amounts = list(self.discount.calculate(basket_items))
@@ -85,7 +85,7 @@ class TestMForNPoundsGroup:
         """Test that the discount is not applied if it is cheaper not to
         apply it."""
         basket_barcodes = [9, 2, 5, 9, 8]
-        basket_items = [BasketItem(product_db[barcode])
+        basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
         discount_amounts = list(self.discount.calculate(basket_items))

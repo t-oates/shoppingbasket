@@ -47,11 +47,11 @@ class MForN(PromotionModel):
 
     def calculate(self, items: list['BasketItem']) -> list[float]:
         eligible_items = [item for item in items
-                          if item.product.barcode == self.barcode]
+                          if item.barcode == self.barcode]
         if len(eligible_items) < self.m:
             return []
 
-        unit_price = eligible_items[0].product.unit_price
+        unit_price = eligible_items[0].unit_price
 
         # Could just do len(eligible_items) since this only applied to 'per
         # item' products, but this works if in future we have item.amount > 1
@@ -101,4 +101,4 @@ class MForNPounds(PromotionModel):
             A list of eligible items.
         """
         return [item for item in items if
-                item.product.barcode in self.barcodes]
+                item.barcode in self.barcodes]
