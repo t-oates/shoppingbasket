@@ -47,14 +47,15 @@ class Basket:
         return Invoice(self.basket_items, self.promotions)
 
 
+@dataclass
 class Invoice:
     """A receipt for a shopping basket."""
 
-    def __init__(self,
-                 basket_items: Iterable[BasketItem],
-                 promotions: Optional[Promotions] = None) -> None:
-        self.basket_items = basket_items
-        self.discounts = self.calculate_discounts(promotions)
+    basket_items: Iterable[BasketItem]
+    promotions: Optional[Promotions] = None
+
+    def __post_init__(self):
+        self.discounts = self.calculate_discounts(self.promotions)
 
     def calculate_discounts(self, promotions: Promotions | None) -> list[BasketItem]:
         """Calculate the discounts for the basket."""
