@@ -3,6 +3,8 @@ from typing import Protocol, Iterable
 
 import more_itertools
 
+from basket_item import BasketItem
+
 
 @dataclass
 class Promotions:
@@ -17,20 +19,19 @@ class Promotions:
         """
 
         for promotion in self.promotions:
-            for discount in promotion.calculate(items):
-                yield promotion.name, discount
+            for discount in promotion.list_discounts(items):
+                yield discount
 
 
 @dataclass
 class Promotion(Protocol):
     """A discount that can be applied to a shopping basket items."""
 
-    def calculate_discounts(self,
-                            items: list['BasketItem']) -> tuple[str, float]:
+    def list_discounts(self, basket_items: list[BasketItem]) -> list[BasketItem]:
         """Calculate the discount for a list of items.
 
         Args:
-            items: A list of items.
+            basket_items: A list of items.
 
         Returns:
             The discount.
@@ -45,19 +46,18 @@ class MForN(Promotion):
     m: int
     n: int
 
-    def calculate(self, items: list['BasketItem']) -> list[float]:
+    def list_discounts(self, items: list['BasketItem']) -> list[BasketItem]:
         eligible_items = [item for item in items
                           if item.barcode == self.barcode]
         if len(eligible_items) < self.m:
             return []
 
         unit_price = eligible_items[0].unit_price
+        discount_amount = unit_price * (self.m - self.n)
+        discount = BasketItem(self.name, discount_amount, amount=-1)
 
-        # Could just do len(eligible_items) since this only applied to 'per
-        # item' products, but this works if in future we have item.amount > 1
-        # for any reason.
-        amount = sum(item.amount for item in eligible_items)
-        return [unit_price * (self.m - self.n)] * int(amount // self.m)
+        num_discounts = len(eligible_items) // self.m
+        return [discount] * num_discounts
 
 
 @dataclass
@@ -67,7 +67,7 @@ class MForNPounds(Promotion):
     m: int
     n: float
 
-    def calculate(self, items: list['BasketItem']) -> Iterable[float]:
+    def list_discounts(self, items: list['BasketItem']) -> list[BasketItem]:
         """Calculate the discount for a list of items.
 
         Args:
@@ -82,6 +82,8 @@ class MForNPounds(Promotion):
         # Apply to most expensive products first, for happy customers.
         items_in_promotion.sort(reverse=True, key=lambda item: item.price)
 
+
+        discounts = []
         for items in more_itertools.chunked(items_in_promotion, self.m):
             if len(items) < self.m:
                 break
@@ -89,7 +91,9 @@ class MForNPounds(Promotion):
             items_subtotal = sum(item.price for item in items)
             discount_amount = items_subtotal - self.n
             if discount_amount > 0:
-                yield round(discount_amount, 2)
+                discounts.append(BasketItem(self.name, discount_amount, amount=-1))
+
+        return discounts
 
     def get_eligible_items(self, items: list['BasketItem']) -> list['BasketItem']:
         """Get the items that are eligible for the discount.

@@ -3,6 +3,7 @@ from typing import Iterable, Optional
 
 from tabulate import tabulate, SEPARATING_LINE
 
+from basket_item import BasketItem
 from product_db import ProductDB
 from promotions import Promotions
 
@@ -55,11 +56,11 @@ class BasketManager:
             receipt.append(["Savings"])
             receipt.append(SEPARATING_LINE)
 
-            for name, discount_amount in self.discounts:
-                receipt.append([f"{name}", f"£-{discount_amount:.2f}"])
+            for discount in self.discounts:
+                receipt.append([f"{discount.name}", f"£{discount.price:.2f}"])
 
             receipt.append(SEPARATING_LINE)
-            receipt.append([f"Total savings", f"£-{self.discount_total:.2f}"])
+            receipt.append([f"Total savings", f"£{self.discount_total:.2f}"])
 
         receipt.append(SEPARATING_LINE)
         receipt.append([f"Total to pay", f"£{self.total:.2f}"])
@@ -72,39 +73,13 @@ class BasketManager:
         return sum(item.price for item in self.basket_items)
 
     @property
-    def discounts(self) -> Iterable[tuple[str, float]]:
+    def discounts(self):
         return self.promotions.calculate_discounts(self.basket_items)
 
     @property
     def discount_total(self) -> float:
-        return sum(discount_amount for _, discount_amount in self.discounts)
+        return sum(discount.price for discount in self.discounts)
 
     @property
     def total(self) -> float:
-        return self.subtotal - self.discount_total
-
-
-@dataclass(frozen=True)
-class BasketItem:
-    """An item in a shopping basket."""
-
-    name: str
-    unit_price: float
-    barcode: Optional[int] = None
-    units: Optional[str] = None
-    amount: float = 1.0
-
-    @property
-    def description(self):
-        """A description of the item."""
-        desc = self.name
-        if self.units:
-            amount = f"{self.amount}{self.units}"
-            rate = f"£{self.unit_price}/{self.units}"
-            desc += f"\n{amount} @ {rate}"
-        return desc
-
-    @property
-    def price(self) -> float:
-        """The price of the item."""
-        return round(self.unit_price * self.amount, 2)
+        return self.subtotal + self.discount_total

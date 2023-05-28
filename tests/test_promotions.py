@@ -1,6 +1,6 @@
 import pytest
 
-from basket import BasketItem
+from basket_item import BasketItem
 from promotions import MForNPounds
 from product_db import ProductDB
 
@@ -13,7 +13,7 @@ def product_db():
 
 class TestMForNPoundsSingle:
     barcodes = {4}  # Coke
-    discount = MForNPounds("Coke 2 for £1", barcodes, 2, 1.0)
+    promotion = MForNPounds("Coke 2 for £1", barcodes, 2, 1.0)
 
     def test_not_exact_multiple(self, product_db):
         """Test that the discount is calculated correctly when the number of
@@ -22,8 +22,10 @@ class TestMForNPoundsSingle:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
-        assert discount_amounts == [0.40, 0.40]
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
+
+        assert discount_amounts == [-0.40, -0.40]
 
     def test_exact_multiple(self, product_db):
         """Test that the discount is calculated correctly when the number of
@@ -32,13 +34,15 @@ class TestMForNPoundsSingle:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
-        assert discount_amounts == [0.40, 0.40, 0.40]
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
+
+        assert discount_amounts == [-0.40, -0.40, -0.40]
 
 
 class TestMForNPoundsGroup:
     barcodes = {6, 7, 8, 9}  # Ales
-    discount = MForNPounds("3 ales for £6", barcodes, 3, 6.0)
+    promotion = MForNPounds("3 ales for £6", barcodes, 3, 6.0)
 
     def test_not_exact_multiple(self, product_db):
         """Test that the discount is calculated correctly when the number of
@@ -47,14 +51,15 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
 
         # sorted eligible barcodes by price (desc): [6, 6, 7, 7, 8, 8, 8]
         # converted to prices: [2.70, 2.70, 2.55, 2.55, 2.10, 2.10, 2.10]
         # discounts = [(2.70 + 2.70 + 2.55) - 6.00, (2.55 + 2.10 + 2.10) - 6.00]
         # discounts = [1.95, 0.75]
 
-        assert discount_amounts == [1.95, 0.75]
+        assert discount_amounts == [-1.95, -0.75]
 
     def test_exact_multiple(self, product_db):
         """Test that the discount is calculated correctly when the number of
@@ -68,8 +73,10 @@ class TestMForNPoundsGroup:
         # discounts = [(2.70 + 2.70 + 2.55) - 6.00, (2.10 + 2.10 + 2.10) - 6.00]
         # discounts = [1.95, 0.30]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
-        assert discount_amounts == [1.95, 0.30]
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
+
+        assert discount_amounts == [-1.95, -0.30]
 
     def test_not_enough_eligible_items(self, product_db):
         """Test that the discount is not applied when there are not enough
@@ -78,7 +85,9 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
+
         assert discount_amounts == []
 
     def test_products_too_cheap(self, product_db):
@@ -88,5 +97,7 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discount_amounts = list(self.discount.calculate(basket_items))
+        discounts = self.promotion.list_discounts(basket_items)
+        discount_amounts = [discount.price for discount in discounts]
+
         assert discount_amounts == []

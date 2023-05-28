@@ -1,6 +1,6 @@
 import pytest
 
-from basket import BasketItem
+from basket_item import BasketItem
 
 
 class TestBasketItem:
