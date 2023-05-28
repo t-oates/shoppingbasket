@@ -3,7 +3,7 @@ from typing import Protocol
 
 import more_itertools
 
-from basket_item import BasketItem
+from basket_item import BasketItem, Discount
 
 
 @dataclass
@@ -26,7 +26,7 @@ class Promotions:
 class Promotion(Protocol):
     """A discount that can be applied to a shopping basket items."""
 
-    def list_discounts(self, basket_items: list[BasketItem]) -> list[BasketItem]:
+    def list_discounts(self, basket_items: list[BasketItem]) -> list[Discount]:
         """Calculate the discount for a list of items.
 
         Args:
@@ -45,7 +45,7 @@ class MForN(Promotion):
     m: int
     n: int
 
-    def list_discounts(self, items: list['BasketItem']) -> list[BasketItem]:
+    def list_discounts(self, items: list['BasketItem']) -> list[Discount]:
         eligible_items = [item for item in items
                           if item.barcode == self.barcode]
         if len(eligible_items) < self.m:
@@ -53,7 +53,7 @@ class MForN(Promotion):
 
         unit_price = eligible_items[0].unit_price
         discount_amount = unit_price * (self.m - self.n)
-        discount = BasketItem(self.name, discount_amount, amount=-1)
+        discount = Discount(self.name, discount_amount)
 
         num_discounts = len(eligible_items) // self.m
         return [discount] * num_discounts
@@ -66,7 +66,7 @@ class MForNPounds(Promotion):
     m: int
     n: float
 
-    def list_discounts(self, items: list['BasketItem']) -> list[BasketItem]:
+    def list_discounts(self, items: list['BasketItem']) -> list[Discount]:
         """Calculate the discount for a list of items.
 
         Args:
@@ -81,7 +81,6 @@ class MForNPounds(Promotion):
         # Apply to most expensive products first, for happy customers.
         items_in_promotion.sort(reverse=True, key=lambda item: item.line_price)
 
-
         discounts = []
         for items in more_itertools.chunked(items_in_promotion, self.m):
             if len(items) < self.m:
@@ -90,7 +89,7 @@ class MForNPounds(Promotion):
             items_subtotal = sum(item.line_price for item in items)
             discount_amount = items_subtotal - self.n
             if discount_amount > 0:
-                discounts.append(BasketItem(self.name, discount_amount, amount=-1))
+                discounts.append(Discount(self.name, discount_amount))
 
         return discounts
 

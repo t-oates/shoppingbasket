@@ -26,3 +26,13 @@ class BasketItem:
     def line_price(self) -> float:
         """The price of the item."""
         return round(self.unit_price * self.amount, 2)
+
+
+@dataclass(frozen=True)
+class Discount(BasketItem):
+    """A discount on an item in a shopping basket."""
+
+    @property
+    def line_price(self) -> float:
+        """The price of the discount."""
+        return super().line_price * -1
