@@ -51,13 +51,13 @@ class MForN(PromotionModel):
         if len(eligible_items) < self.m:
             return []
 
-        unit_price = eligible_items[0].product.price
+        unit_price = eligible_items[0].product.unit_price
 
         # Could just do len(eligible_items) since this only applied to 'per
         # item' products, but this works if in future we have item.amount > 1
         # for any reason.
         amount = sum(item.amount for item in eligible_items)
-        return [unit_price * (self.m - self.n)] * amount // self.m
+        return [unit_price * (self.m - self.n)] * int(amount // self.m)
 
 
 @dataclass
