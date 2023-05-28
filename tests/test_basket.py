@@ -15,9 +15,9 @@ class TestBasketItem:
     def test_price(self, barcode, price):
         assert self.basket_items[barcode].price == price
 
-    @pytest.mark.parametrize('barcode, price_gbp, num_lines',
-                             [(1, '£0.50', 1), (2, '£5.11', 2)])
-    def test_to_receipt_string(self, barcode, price_gbp, num_lines):
-        receipt_string = self.basket_items[barcode].to_receipt_string()
-        assert price_gbp in receipt_string
-        assert len(receipt_string.splitlines()) == num_lines
+    @pytest.mark.parametrize('barcode, price, num_lines',
+                             [(1, 0.50, 1), (2, 5.11, 2)])
+    def test_to_receipt_line(self, barcode, price, num_lines):
+        receipt_line = self.basket_items[barcode].to_receipt_line()
+        assert receipt_line.price == price
+        assert len(receipt_line.description.splitlines()) == num_lines
