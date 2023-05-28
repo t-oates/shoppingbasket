@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import NamedTuple
+from typing import NamedTuple, Iterable
 
 from product_db import Product, ProductDB
+from promotions import PromotionModel, Promotions
 
 
 class BasketManager:
@@ -12,8 +13,11 @@ class BasketManager:
         basket_items: A list of BasketItems.
     """
 
-    def __init__(self, product_db: ProductDB, promotions: list['Promotion']) -> None:
+    def __init__(self,
+                 product_db: ProductDB,
+                 promotions: Promotions | None = None) -> None:
         self.product_db = product_db
+        self.promotions = promotions or Promotions([])
         self.basket_items = []
 
     def add_item(self, barcode: int, amount: float = 1.0) -> None:
@@ -36,8 +40,20 @@ class BasketManager:
             receipt_line = item.to_receipt_line()
             receipt += (f"\n{receipt_line.description}\t\t\t\t"
                         f"£{receipt_line.price:.2f}")
+
         receipt += "\n-------------------------"
-        receipt += f"\nSubtotal\t\t\t\t£{self.subtotal:.2f}"
+        receipt += f"\nSubtotal\t\t\t£{self.subtotal:.2f}"
+
+        if self.discount_total > 0:
+            receipt += "\n-------------------------"
+            receipt += "\nSavings:"
+            for name, discount_amount in self.discounts:
+                receipt += f"\n{name}\t\t\t£-{discount_amount:.2f}"
+            receipt += f"\nTotal savings\t\t\t£-{self.discount_total:.2f}"
+
+        receipt += "\n-------------------------"
+        receipt += f"\nTotal\t\t\t\t£{self.total:.2f}"
+
         print(receipt)
 
     @property
@@ -45,7 +61,17 @@ class BasketManager:
         """The total price of items in the basket before discounts."""
         return sum(item.price for item in self.basket_items)
 
+    @property
+    def discounts(self) -> Iterable[tuple[str, float]]:
+        return self.promotions.calculate_discounts(self.basket_items)
 
+    @property
+    def discount_total(self) -> float:
+        return sum(discount_amount for _, discount_amount in self.discounts)
+
+    @property
+    def total(self) -> float:
+        return self.subtotal - self.discount_total
 
 
 @dataclass
