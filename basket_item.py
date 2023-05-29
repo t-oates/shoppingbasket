@@ -14,7 +14,7 @@ class BasketItem:
 
     @property
     def description(self):
-        """A description of the item."""
+        """A description of the item, to appear on the invoice."""
         desc = self.name
         if self.units:
             amount = f"{self.quantity}{self.units}"
@@ -30,7 +30,10 @@ class BasketItem:
 
 @dataclass(frozen=True)
 class Discount(BasketItem):
-    """A discount on an item in a shopping basket."""
+    """A discount on an item in a shopping basket.
+
+    This is the same as a regular BasketItem, but with a negative line price.
+    """
 
     @property
     def line_price(self) -> float:
