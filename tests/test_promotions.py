@@ -1,8 +1,8 @@
 import pytest
 
 from basket_item import BasketItem
-from promotions import MForNPounds
 from product_db import ProductDB
+from promotions import MForNPounds
 
 
 @pytest.fixture
