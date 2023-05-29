@@ -50,7 +50,8 @@ class Basket:
             self.add_item(basket_item)
         except KeyError:
             # Could raise an error, but this allows continuing
-            warnings.warn(f"Barcode {barcode} not found in product database.")
+            warnings.warn(f"Barcode {barcode} not found in product database. "
+                          "Item not added to basket.")
 
     def generate_invoice(self) -> 'Invoice':
         """Get an invoice for items in the basket."""
