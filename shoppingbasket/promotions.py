@@ -61,7 +61,11 @@ class MForN(Promotion):
     m: int = 3  # Number of items required for discount
     n: int = 2  # Number of items that are paid for
 
-    def get_discounts(self, basket_items: list[BasketItem]) -> Iterator[Discount]:
+    def get_discounts(
+            self,
+            basket_items: list[BasketItem]
+    ) -> Iterator[Discount]:
+        """Calculate the discounts for a list of items."""
         eligible_items = self.list_eligible_items(basket_items)
         item_counts = Counter(eligible_items)
         for item, item_count in item_counts.items():
@@ -117,7 +121,12 @@ class MForNPounds(Promotion):
     m: int = 3  # Number of items required for discount
     n: float = 6.0  # Price to pay for m items
 
-    def get_discounts(self, basket_items: list[BasketItem]) -> Iterator[Discount]:
+    def get_discounts(
+            self,
+            basket_items: list[BasketItem]
+    ) -> Iterator[Discount]:
+        """Calculate the discounts for a list of items."""
+
         eligible_items = self.list_eligible_items(basket_items)
 
         # Sort so we discount most expensive items first
