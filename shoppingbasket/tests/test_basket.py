@@ -8,8 +8,8 @@ from shoppingbasket.promotions import MForN, MForNPounds
 class TestBasket:
     def test_add_item(self):
         basket = Basket()
-        basket.add_item(BasketItem("Beans", 0.65))
-        basket.add_item(BasketItem("Coke", 0.70))
+        basket.add_item("Beans", 0.65)
+        basket.add_item("Coke", 0.70)
         assert len(basket.basket_items) == 2
 
     def test_add_item_from_barcode(self, products):

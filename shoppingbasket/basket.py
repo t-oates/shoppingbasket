@@ -32,13 +32,33 @@ class Basket:
         self.basket_items = [] if basket_items is None else basket_items
         self.promotions = [] if promotions is None else promotions
 
-    def add_item(self, basket_item: 'BasketItem') -> None:
+    def add_item(self,
+                 name: str,
+                 unit_price: float,
+                 *args,
+                 barcode: Optional[int] = None,
+                 units: Optional[str] = None,
+                 quantity: float = 1.0,
+                 **kwargs) -> None:
         """Add an item to the basket.
 
         Args:
-            basket_item: The item to add.
+            name: The name of the item.
+            unit_price: The price of the item.
+            *args: Additional arguments to pass to BasketItem.
+            barcode: The barcode of the item. Defaults to None.
+            units: The units of the item. Defaults to None.
+            quantity: The amount of the item. Defaults to 1.0.
+            **kwargs: Additional keyword arguments to pass to BasketItem.
         """
 
+        basket_item = BasketItem(name,
+                                 unit_price,
+                                 *args,
+                                 barcode=barcode,
+                                 units=units,
+                                 quantity=quantity,
+                                 **kwargs)
         self.basket_items.append(basket_item)
 
     def add_item_from_barcode(self,
@@ -59,7 +79,7 @@ class Basket:
 
         try:
             product = self.products[barcode]
-            self.add_item(BasketItem(**product, quantity=quantity))
+            self.add_item(**product, quantity=quantity)
         except KeyError:
             # Could raise an error, but this allows continuing
             warnings.warn(f"Barcode {barcode} not found in product database. "
