@@ -10,14 +10,14 @@ class BasketItem:
     unit_price: float
     barcode: Optional[int] = None
     units: Optional[str] = None
-    amount: float = 1.0
+    quantity: float = 1.0
 
     @property
     def description(self):
         """A description of the item."""
         desc = self.name
         if self.units:
-            amount = f"{self.amount}{self.units}"
+            amount = f"{self.quantity}{self.units}"
             rate = f"£{self.unit_price}/{self.units}"
             desc += f"\n{amount} @ {rate}"
         return desc
@@ -25,7 +25,7 @@ class BasketItem:
     @property
     def line_price(self) -> float:
         """The price of the item."""
-        return round(self.unit_price * self.amount, 2)
+        return round(self.unit_price * self.quantity, 2)
 
 
 @dataclass(frozen=True)
