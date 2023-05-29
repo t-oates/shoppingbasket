@@ -1,8 +1,38 @@
 - barcode: 1
   name: Beans
-  unit_price: 1.50
+  unit_price: 0.50
 
 - barcode: 2
   name: Onions
   unit_price: 0.29
   units: kg
+
+- barcode: 3
+  name: Bananas
+  unit_price: 0.11
+  units: kg
+
+- barcode: 4
+  name: Coke
+  unit_price: 0.70
+
+- barcode: 5
+  name: Oranges
+  unit_price: 1.99
+  units: kg
+
+- barcode: 6
+  name: CSE Finest Ale
+  unit_price: 2.70
+
+- barcode: 7
+  name: Tim's Ale
+  unit_price: 2.55
+
+- barcode: 8
+  name: Value IPA
+  unit_price: 2.10
+
+- barcode: 9
+  name: Super Value IPA
+  unit_price: 1.10
