@@ -130,3 +130,12 @@ Total savings          £-0.90
 --------------------   ------
 Total to pay            £2.40
 ```
+
+# Limitations
+There are a few limitations and potential improvements that could be made to the software. Many are listed [in the repository's issues](https://github.com/timbonator/shoppingbasket/issues).
+
+These are the ones that stand out to me the most:
+1) Currently, there is **no logic to detect whether an item belongs to multiple promotions**. This means that discounts might be applied too many times. Discounts should (unless otherwise specified) be calculated based on which combination gives the greatest total discount, without a single item being used multiple times.
+2) The **product database must either be created from a YAML file or manually**. It would be nice to have features to read from CSV, JSON, SQL, etc.
+3) **Promotion creation is not very user-friendly**. It would be nice to have a way to import them from file (in case of lots of discounts) or enter them from the command prompt.
+4) **Only two types of promotion**: New types of promotion can easily be created in future by inheriting from Promotion (only the 'get_discounts' method needs to be define), but there is no way with the current software to create a promotion that doesn't either fit under "N items for the price of M" or "N items for £M". Additionally, MForN cannot be applied to groups of different types of items.
