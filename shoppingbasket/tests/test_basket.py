@@ -1,6 +1,7 @@
 import pytest
 
-from shoppingbasket.basket import Basket, Invoice
+from shoppingbasket.basket import Basket
+from shoppingbasket import Invoice
 from shoppingbasket.basket_item import BasketItem
 from shoppingbasket.promotions import MForN, MForNPounds
 
