@@ -25,8 +25,15 @@ class BasketItem:
 
     @property
     def description(self):
-        """A description of the item, to appear on the invoice."""
+        """A description of the item, to appear on the invoice.
+
+        This is usually just the item name, but a second line is added for
+        items with units (e.g. '1.5kg @ £2.00/kg').
+        """
+
         desc = self.name
+
+        # For items with units, add a second line with the amount and rate
         if self.units:
             amount = f"{self.quantity}{self.units}"
             rate = f"£{self.unit_price}/{self.units}"
