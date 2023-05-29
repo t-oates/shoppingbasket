@@ -32,7 +32,7 @@ Total to pay            £1.85
 ### Using ProductDB
 Instead of manually entering a product each time, the basket can be initialised with a database, and then project retrieved by barcode.
 
-https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/using_product_db.py#L1-L18
+https://github.com/timbonator/shoppingbasket/blob/db5c14d3798066ee98981aef12d8df6d1a8750df/shoppingbasket/examples/using_product_db.py#L1-L18
 
 **Output:**
 ```
@@ -52,7 +52,7 @@ Total to pay            £3.84
 #### Reading a YAML file
 A nice way of setting up your products database is by importing the data from a YAML file:
 
-https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/using_product_db.py#L22-L32
+https://github.com/timbonator/shoppingbasket/blob/db5c14d3798066ee98981aef12d8df6d1a8750df/shoppingbasket/examples/using_product_db.py#L22-L32
 
 **Example YAML file**:
 https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/data/products.yaml#L1-L38
