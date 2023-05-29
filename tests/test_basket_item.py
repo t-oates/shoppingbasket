@@ -6,7 +6,7 @@ from basket_item import BasketItem, Discount
 class TestBasketItem:
     basket_items = {
         'Beans': BasketItem('Beans', 0.5),
-        'Onions': BasketItem('Onions', 1.99, units='kg', amount=2.569)
+        'Onions': BasketItem('Onions', 1.99, units='kg', quantity=2.569)
     }
 
     @pytest.mark.parametrize(

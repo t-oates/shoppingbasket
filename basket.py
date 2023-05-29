@@ -20,12 +20,12 @@ class Basket:
         """Add an item to the basket."""
         self.basket_items.append(basket_item)
 
-    def add_item_from_barcode(self, barcode: int, amount: float = 1.0) -> None:
+    def add_item_from_barcode(self, barcode: int, quantity: float = 1.0) -> None:
         """Add an item to the basket.
 
         Args:
             barcode: The barcode of the item to add.
-            amount: The amount of the item to add. Defaults to 1.0.
+            quantity: The amount of the item to add. Defaults to 1.0.
 
         Raises:
             ValueError: If product_db is None.
@@ -35,7 +35,7 @@ class Basket:
             raise (ValueError("Cannot add from barcode without product_db."))
 
         product = self.product_db[barcode]
-        basket_item = BasketItem(**product, amount=amount)
+        basket_item = BasketItem(**product, quantity=quantity)
         self.add_item(basket_item)
 
     def generate_invoice(self) -> 'Invoice':
