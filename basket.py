@@ -10,7 +10,16 @@ from promotions import Promotion
 
 @dataclass
 class Basket:
-    """Keeps track of items in a shopping basket."""
+    """Keeps track of items in a shopping basket.
+
+    Items can either be added to the basket manually (by creating a new item),
+    or by scanning a barcode that is looked up in the product database.
+
+    Attributes:
+        product_db: A database of products, keyed by barcode.
+        basket_items: A list of items in the basket.
+        promotions: A list of promotions that can be applied to the basket.
+    """
 
     product_db: Optional[ProductDB] = None
     basket_items: Optional[list[BasketItem]] = field(default_factory=list)
