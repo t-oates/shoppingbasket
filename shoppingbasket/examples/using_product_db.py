@@ -10,7 +10,7 @@ basket = Basket(products=products)
 
 # Add items to basket using barcode
 basket.add_item_from_barcode(1)
-basket.add_item_from_barcode(3, 0.5)
+basket.add_item_from_barcode(3, quantity=0.5)  # A product that has units
 basket.add_item_from_barcode(2)
 basket.add_item_from_barcode(1)
 
@@ -25,7 +25,7 @@ product_db_yaml = ProductDB.from_yaml(yaml_path)
 basket_yaml = Basket(products=product_db_yaml)
 basket_yaml.add_item_from_barcode(1)
 basket_yaml.add_item_from_barcode(1)
-basket_yaml.add_item_from_barcode(5, 0.2)
+basket_yaml.add_item_from_barcode(5, quantity=0.2)
 basket_yaml.add_item_from_barcode(4)
 basket_yaml.add_item_from_barcode(4)
 
