@@ -1,3 +1,4 @@
+import warnings
 from dataclasses import dataclass, field
 from typing import Iterable, Optional, Iterator
 
@@ -49,7 +50,7 @@ class Basket:
             self.add_item(basket_item)
         except KeyError:
             # Could raise an error, but this allows continuing
-            print(f"Barcode {barcode} not found in product database.")
+            warnings.warn(f"Barcode {barcode} not found in product database.")
 
     def generate_invoice(self) -> 'Invoice':
         """Get an invoice for items in the basket."""
