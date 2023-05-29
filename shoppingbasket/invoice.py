@@ -9,7 +9,12 @@ from shoppingbasket.promotions import Promotion
 
 @dataclass
 class Invoice:
-    """An invoice for a shopping basket."""
+    """An invoice for a shopping basket.
+
+    Attributes:
+        basket_items: The items in the basket.
+        promotions: The promotions applied to the basket.
+    """
 
     basket_items: Iterable[BasketItem]
     promotions: Optional[list[Promotion]] = None
@@ -73,13 +78,21 @@ class Invoice:
         return tbl.draw()
 
     def _get_product_lines(self) -> list[list[str]]:
-        """The lines for the products in the basket."""
+        """The lines for the products in the basket.
+
+        Each line is a list of two strings: the item description and the item.
+        """
+
         product_lines = [[f"{item.description}", f"£{item.line_price:.2f}"]
                          for item in self.basket_items]
         return product_lines
 
     def _get_discount_lines(self) -> list[list[str]]:
-        """The lines for the discounts in the basket."""
+        """The lines for the discounts in the basket.
+
+        Each line is a list of two strings: the discount description and the
+        discount amount.
+        """
 
         return [[f"{discount.name}", f"£{discount.line_price:.2f}"]
                 for discount in self.discounts]
