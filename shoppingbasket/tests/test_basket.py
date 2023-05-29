@@ -1,8 +1,8 @@
 import pytest
 
-from basket import Basket, Invoice
-from basket_item import BasketItem
-from promotions import MForN, MForNPounds
+from shoppingbasket.basket import Basket, Invoice
+from shoppingbasket.basket_item import BasketItem
+from shoppingbasket.promotions import MForN, MForNPounds
 
 
 class TestBasket:

@@ -1,5 +1,5 @@
-from basket_item import BasketItem
-from promotions import MForNPounds
+from shoppingbasket.basket_item import BasketItem
+from shoppingbasket.promotions import MForNPounds
 
 
 class TestMForNPoundsSingle:

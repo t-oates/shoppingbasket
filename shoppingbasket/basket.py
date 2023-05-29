@@ -4,9 +4,9 @@ from typing import Iterable, Optional, Iterator
 
 from texttable import Texttable
 
-from basket_item import BasketItem, Discount
-from product_db import ProductDB
-from promotions import Promotion
+from shoppingbasket.basket_item import BasketItem, Discount
+from shoppingbasket.product_db import ProductDB
+from shoppingbasket.promotions import Promotion
 
 
 class Basket:

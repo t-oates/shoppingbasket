@@ -1,9 +1,9 @@
-from product_db import ProductDB
+from shoppingbasket.product_db import ProductDB
 
 
 class TestProductDB:
     def test_from_yaml(self):
-        db_path = 'tests/db/products.yaml'
+        db_path = 'shoppingbasket/tests/db/products.yaml'
         product_db = ProductDB.from_yaml(db_path)
         expected_products = {
             1: {'barcode': 1, 'name': 'Beans', 'unit_price': 1.5},

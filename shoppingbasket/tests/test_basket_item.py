@@ -1,6 +1,6 @@
 import pytest
 
-from basket_item import BasketItem, Discount
+from shoppingbasket.basket_item import BasketItem, Discount
 
 
 class TestBasketItem:

@@ -5,7 +5,7 @@ from typing import Iterator, Iterable
 
 import more_itertools
 
-from basket_item import BasketItem, Discount
+from shoppingbasket.basket_item import BasketItem, Discount
 
 
 @dataclass
