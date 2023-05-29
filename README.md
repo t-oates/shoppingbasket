@@ -1,78 +1,63 @@
-# ShoppingBasket
-ShoppingBasket is a simple Python package to track items in a shopping basket and generate an invoice/receipt based on these items and applied promotions.
+# shoppingbasket
+shoppingbasket is a simple Python package to track items in a shopping basket and generate an invoice/receipt based on these items and applied promotions.
 
-## The Task
-The task is to model a supermarket pricing calculator in software. This is inspired by PragDave’s Supermarket Kata.
+## Requirements
+Requires Python >= 3.10.
 
-You should write a program which works out how to price a shopping basket, allowing for different pricing structures including:
+Install requirements using either [environment.yml](environment.yml) or [requirements.txt](requirements.txt):
 
- - Three tins of beans for the price of two
- - Onions for 29p / kg
- - Two cans of coca-cola for £1
- - Any 3 ales from the set {…} for £6
-
-Here’s an example of a receipt illustrating the type of output that should be possible (although your program doesn’t need to produce nicely formatted output like this):
-Item               | Price
--------------------| -------------
-Beans              | 0.50
-Beans              | 0.50
-Beans              | 0.50
-Coke               | 0.70
-Coke               | 0.70
-Oranges            |
-0.200kg @ £1.99/kg | 0.40
-**Sub-total**      | 3.30
-**Savings**        |
-Beans 3 for 2      | -0.50
-Coke 2 for £1      | -0.40
-**Total savings**  | -0.90
-**Total to Pay**   | -2.40
- 
-We’d like you to do your work under version control (preferably using git) and provide us with a copy of the repository when you have finished (by showing us a GitHub / similar repository, or sending us a zip of the repository if you prefer).
-
-Your work does not need to account for user interface or IO; we are interested in how you represent a basket of things and a set of pricing rules, how you compute the correct price for the basket, and what you have done to assess the correctness of what you have made.
-
-You should be designing with some thought to how the requirements might change and assessing the ways they are incomplete.
-
-We would also like the repository to contain a README explaining what you have done, how to use your work, and any trade-offs, limitations or particularly excellent features of what you have made.
-
-We would prefer if you use some of the technologies we are most familiar with, so ideally this would be written in one of Python, Clojure, Java or Javascript. We understand that we’re asking you to do work in your free time and that this might be hard to accommodate, so please do not feel you have to spend ages on it.
+`conda env create --file=environment.yml` or `pip install -r requirements.txt`
 
 ## Examples
 
 ### Quickstart
 A basic shopping basket can be initialised empty, and then items added to it manually.
 
-https://github.com/timbonator/shoppingbasket/blob/37843014cb2095d032b3d71cf8b11bf8e2c301c9/shoppingbasket/examples/quickstart.py
+https://github.com/timbonator/shoppingbasket/blob/5c6e936f2a3829748e360787a459f3d7191c90da/shoppingbasket/examples/quickstart.py#L1-L13
 
-Output:
+**Output:**
 ```
 Item                    Price
 =============================
 Beans                   £0.65
 Coke                    £0.70
 Onions                       
-0.5kg @ £0.5/kg         £0.25
+0.5kg @ £1.0/kg         £0.50
 --------------------   ------
-Sub-total               £1.60
+Sub-total               £1.85
 --------------------   ------
-Total to pay            £1.60
+Total to pay            £1.85
 ```
 
 ### Using ProductDB
 Instead of manually entering a product each time, the basket can be initialised with a database, and then project retrieved by barcode.
 
-https://github.com/timbonator/shoppingbasket/blob/4a6cbb688626659c0072915a4fc849dce7c50d59/shoppingbasket/examples/using_product_db.py
+https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/using_product_db.py#L1-L18
+
+**Output:**
+```
+Item                    Price
+=============================
+Beans                   £1.50
+Onions                       
+0.5kg @ £0.29/kg        £0.14
+Coke                    £0.70
+Beans                   £1.50
+--------------------   ------
+Sub-total               £3.84
+--------------------   ------
+Total to pay            £3.84
+```
 
 #### Reading a YAML file
 A nice way of setting up your products database is by importing the data from a YAML file:
 
-https://github.com/timbonator/shoppingbasket/blob/ccd3ff9c45c9753a58b705a2770b45d450a6330f/shoppingbasket/examples/from_yaml.py
+https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/using_product_db.py#L22-L32
 
-YAML file:
-https://github.com/timbonator/shoppingbasket/blob/ccd3ff9c45c9753a58b705a2770b45d450a6330f/shoppingbasket/examples/data/products.yaml
+**Example YAML file**:
+https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/data/products.yaml#L1-L38
 
-Output:
+**Output:**
 ```
 Item                    Price
 =============================
@@ -93,7 +78,7 @@ Discounts can be applied using two different Promotions models:
  - `MForN`: Buy M products (of the same type) and pay the price of N.
  - `MForNPounds`: Buy M products in a set of products and pay N pounds (these can be different products).
 
-https://github.com/timbonator/shoppingbasket/blob/bab543d4b3f9263ac966cad158ff1f7b98c016d8/shoppingbasket/examples/with_promotions.py
+https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/with_promotions.py#L6-L19
 
 Output:
 ```
@@ -118,9 +103,9 @@ Total to pay            £9.10
 ```
 
 ## Example from the task spec
-Generating an invoice to match the example one in the task spec:
+Generating an invoice to match the example from the task spec, sent via email:
 
-https://github.com/timbonator/shoppingbasket/blob/493f07e6595fd7c3e54c287ea9461ce33188ec69/shoppingbasket/examples/from_task_spec.py
+https://github.com/timbonator/shoppingbasket/blob/8270285a781e2d362d659041dcc0f3986c3572d7/shoppingbasket/examples/with_promotions.py#L3-L19
 
 Output:
 ```
