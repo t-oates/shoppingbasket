@@ -19,4 +19,5 @@ promotions = [
     MForNPounds("Coke 2 for £1", {4}, m=2, n=1.0),
 ]
 
-print(basket.generate_invoice(promotions=promotions).to_string())
+invoice = basket.generate_invoice(promotions=promotions)
+print(invoice.to_string())
