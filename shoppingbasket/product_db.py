@@ -5,6 +5,12 @@ class ProductDB:
     """A database of products, indexed by barcode."""
 
     def __init__(self, products: list[dict]) -> None:
+        """Initialise a product database.
+
+        Args:
+            products: A list of products, each represented as a dictionary.
+        """
+
         self._products = {product['barcode']: product for product in products}
 
     def __getitem__(self, barcode: int) -> 'Product':
