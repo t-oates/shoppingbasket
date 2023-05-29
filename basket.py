@@ -34,9 +34,14 @@ class Basket:
         if self.product_db is None:
             raise (ValueError("Cannot add from barcode without product_db."))
 
-        product = self.product_db[barcode]
-        basket_item = BasketItem(**product, quantity=quantity)
-        self.add_item(basket_item)
+        try:
+            product = self.product_db[barcode]
+            basket_item = BasketItem(**product, quantity=quantity)
+            self.add_item(basket_item)
+        except KeyError:
+            # Could raise an error, but this allows continuing
+            print(f"Barcode {barcode} not found in product database.")
+
 
     def generate_invoice(self) -> 'Invoice':
         """Get an invoice for items in the basket."""
