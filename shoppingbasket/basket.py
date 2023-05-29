@@ -18,19 +18,16 @@ class Basket:
 
     def __init__(self,
                  products: Optional[ProductDB] = None,
-                 basket_items: list[BasketItem] = None,
-                 promotions: Optional[list[Promotion]] = None) -> None:
+                 basket_items: list[BasketItem] = None) -> None:
         """Initialise a basket.
 
         Args:
             products: A database of products, keyed by barcode.
             basket_items: A list of items in the basket.
-            promotions: A list of promotions that can be applied to the basket.
         """
 
         self.products = products
         self.basket_items = [] if basket_items is None else basket_items
-        self.promotions = [] if promotions is None else promotions
 
     def add_item(self,
                  name: str,
@@ -85,9 +82,12 @@ class Basket:
             warnings.warn(f"Barcode {barcode} not found in product database. "
                           "Item not added to basket.")
 
-    def generate_invoice(self) -> 'Invoice':
+    def generate_invoice(
+            self,
+            promotions: Optional[list[Promotion]] = None
+    ) -> 'Invoice':
         """Get an invoice for items in the basket."""
-        return Invoice(self.basket_items, self.promotions)
+        return Invoice(self.basket_items, promotions=promotions)
 
 
 @dataclass
@@ -98,13 +98,12 @@ class Invoice:
     promotions: Optional[list[Promotion]] = None
 
     def __post_init__(self):
-        self.discounts = list(self.get_discounts(self.promotions))
+        self.discounts = list(self.get_discounts())
 
-    def get_discounts(self, promotions: Optional[list[Promotion]]) -> Iterator[
-        Discount]:
+    def get_discounts(self) -> Iterator[Discount]:
         """Calculate the discounts for the basket."""
-        if promotions is not None:
-            for promotion in promotions:
+        if self.promotions is not None:
+            for promotion in self.promotions:
                 yield from promotion.get_discounts(self.basket_items)
 
     @property
