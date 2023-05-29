@@ -1,14 +1,5 @@
-import pytest
-
 from basket_item import BasketItem
-from product_db import ProductDB
 from promotions import MForNPounds
-
-
-@pytest.fixture
-def product_db():
-    db_path = 'tests/db/full_product_db.yaml'
-    return ProductDB.from_yaml(db_path)
 
 
 class TestMForNPoundsSingle:
