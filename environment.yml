@@ -15,7 +15,7 @@ dependencies:
   - pip=23.0.1
   - pluggy=1.0.0
   - pytest=7.3.1
-  - python=3.10.11
+  - python=3.10.1t
   - pyyaml=6.0
   - setuptools=66.0.0
   - sqlite=3.41.2
