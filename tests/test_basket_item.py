@@ -4,12 +4,23 @@ from basket_item import BasketItem
 
 
 class TestBasketItem:
+    basket_items = {
+        'Beans': BasketItem('Beans', 0.5),
+        'Onions': BasketItem('Onions', 1.99, units='kg', amount=2.569)
+    }
+
     @pytest.mark.parametrize(
-        'basket_item, expected_price', [
-            (BasketItem('Beans', 0.5), 0.5),
-            # 5.11 = 1.99 * 2.569 (rounded to 2dp)
-            (BasketItem('Onions', 1.99, units='kg', amount=2.569), 5.11),
-        ]
+        'item_name, expected_line_price',
+        [('Beans', 0.5), ('Onions', 5.11)]
     )
-    def test_price(self, basket_item, expected_price):
-        assert basket_item.line_price == expected_price
+    def test_line_price(self, item_name, expected_line_price):
+        assert self.basket_items[item_name].line_price == expected_line_price
+
+    @pytest.mark.parametrize(
+        'item_name, num_desc_lines',
+        [('Beans', 1), ('Onions', 2)]
+    )
+    def test_description(self, item_name, num_desc_lines):
+        """Test that description has two lines if item has units."""
+        basket_item = self.basket_items[item_name]
+        assert len(basket_item.description.splitlines()) == num_desc_lines
