@@ -15,7 +15,7 @@ class TestBasket:
         assert len(basket.basket_items) == 2
 
     def test_add_item_from_barcode(self, products):
-        basket = Basket(product_db=products)
+        basket = Basket(products=products)
         basket.add_item_from_barcode(1)
         basket.add_item_from_barcode(5)
         basket.add_item_from_barcode(5)
@@ -27,7 +27,7 @@ class TestBasket:
             basket.add_item_from_barcode(1)
 
     def test_add_item_from_barcode_missing(self, products):
-        basket = Basket(product_db=products)
+        basket = Basket(products=products)
         with pytest.warns(UserWarning):
             basket.add_item_from_barcode(999)
 

@@ -1,5 +1,5 @@
 import warnings
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Iterable, Optional, Iterator
 
 from texttable import Texttable
@@ -9,29 +9,42 @@ from product_db import ProductDB
 from promotions import Promotion
 
 
-@dataclass
 class Basket:
     """Keeps track of items in a shopping basket.
 
     Items can either be added to the basket manually (by creating a new item),
     or by scanning a barcode that is looked up in the product database.
-
-    Attributes:
-        product_db: A database of products, keyed by barcode.
-        basket_items: A list of items in the basket.
-        promotions: A list of promotions that can be applied to the basket.
     """
 
-    product_db: Optional[ProductDB] = None
-    basket_items: Optional[list[BasketItem]] = field(default_factory=list)
-    promotions: Optional[list[Promotion]] = None
+    def __init__(self,
+                 products: Optional[ProductDB] = None,
+                 basket_items: list[BasketItem] = None,
+                 promotions: Optional[list[Promotion]] = None) -> None:
+        """Initialise a basket.
+
+        Args:
+            products: A database of products, keyed by barcode.
+            basket_items: A list of items in the basket.
+            promotions: A list of promotions that can be applied to the basket.
+        """
+
+        self.products = products
+        self.basket_items = [] if basket_items is None else basket_items
+        self.promotions = [] if promotions is None else promotions
 
     def add_item(self, basket_item: 'BasketItem') -> None:
-        """Add an item to the basket."""
+        """Add an item to the basket.
+
+        Args:
+            basket_item: The item to add.
+        """
+
         self.basket_items.append(basket_item)
 
-    def add_item_from_barcode(self, barcode: int, quantity: float = 1.0) -> None:
-        """Add an item to the basket.
+    def add_item_from_barcode(self,
+                              barcode: int,
+                              quantity: float = 1.0) -> None:
+        """Add an item to the basket using barcode.
 
         Args:
             barcode: The barcode of the item to add.
@@ -41,13 +54,12 @@ class Basket:
             ValueError: If product_db is None.
         """
 
-        if self.product_db is None:
-            raise (ValueError("Cannot add from barcode without product_db."))
+        if self.products is None:
+            raise (ValueError("Cannot add from barcode without products."))
 
         try:
-            product = self.product_db[barcode]
-            basket_item = BasketItem(**product, quantity=quantity)
-            self.add_item(basket_item)
+            product = self.products[barcode]
+            self.add_item(BasketItem(**product, quantity=quantity))
         except KeyError:
             # Could raise an error, but this allows continuing
             warnings.warn(f"Barcode {barcode} not found in product database. "
@@ -60,7 +72,7 @@ class Basket:
 
 @dataclass
 class Invoice:
-    """A receipt for a shopping basket."""
+    """An invoice for a shopping basket."""
 
     basket_items: Iterable[BasketItem]
     promotions: Optional[list[Promotion]] = None
@@ -68,7 +80,8 @@ class Invoice:
     def __post_init__(self):
         self.discounts = list(self.get_discounts(self.promotions))
 
-    def get_discounts(self, promotions: Optional[list[Promotion]]) -> Iterator[Discount]:
+    def get_discounts(self, promotions: Optional[list[Promotion]]) -> Iterator[
+        Discount]:
         """Calculate the discounts for the basket."""
         if promotions is not None:
             for promotion in promotions:
@@ -91,9 +104,9 @@ class Invoice:
         return self.subtotal + self.discount_total
 
     def to_string(self) -> str:
-        """Generate an invoice for the basket."""
+        """Generate a printable invoice in table format."""
 
-        # Lined to separate sections of the invoice
+        # Line to separate sections of the invoice
         row_separator = ['-' * 20, '-' * 6]
 
         # Create a table for the invoice
@@ -126,8 +139,7 @@ class Invoice:
     def _get_product_lines(self) -> list[list[str]]:
         """The lines for the products in the basket."""
         product_lines = [[f"{item.description}", f"£{item.line_price:.2f}"]
-                          for item in self.basket_items]
-
+                         for item in self.basket_items]
         return product_lines
 
     def _get_discount_lines(self) -> list[list[str]]:
