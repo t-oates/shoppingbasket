@@ -51,7 +51,6 @@ class Basket:
             # Could raise an error, but this allows continuing
             print(f"Barcode {barcode} not found in product database.")
 
-
     def generate_invoice(self) -> 'Invoice':
         """Get an invoice for items in the basket."""
         return Invoice(self.basket_items, self.promotions)
@@ -94,7 +93,7 @@ class Invoice:
         receipt = self._get_product_lines()
 
         if self.discount_total != 0:
-            receipt += self._get_product_lines()
+            receipt += self._get_discount_lines()
 
         receipt.append(SEPARATING_LINE)
         receipt.append([f"Total to pay", f"£{self.total:.2f}"])
