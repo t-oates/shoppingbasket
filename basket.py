@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Iterator
 
 from tabulate import tabulate, SEPARATING_LINE
 
@@ -53,7 +53,7 @@ class Invoice:
     def __post_init__(self):
         self.discounts = list(self.get_discounts(self.promotions))
 
-    def get_discounts(self, promotions: Optional[list[Promotion]]) -> list[Discount]:
+    def get_discounts(self, promotions: Optional[list[Promotion]]) -> Iterator[Discount]:
         """Calculate the discounts for the basket."""
         if promotions is not None:
             for promotion in promotions:
