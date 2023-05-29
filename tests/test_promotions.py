@@ -22,7 +22,7 @@ class TestMForNPoundsSingle:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         assert discount_amounts == [-0.40, -0.40]
@@ -34,7 +34,7 @@ class TestMForNPoundsSingle:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         assert discount_amounts == [-0.40, -0.40, -0.40]
@@ -51,7 +51,7 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         # sorted eligible barcodes by price (desc): [6, 6, 7, 7, 8, 8, 8]
@@ -73,7 +73,7 @@ class TestMForNPoundsGroup:
         # discounts = [(2.70 + 2.70 + 2.55) - 6.00, (2.10 + 2.10 + 2.10) - 6.00]
         # discounts = [1.95, 0.30]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         assert discount_amounts == [-1.95, -0.30]
@@ -85,7 +85,7 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         assert discount_amounts == []
@@ -97,7 +97,7 @@ class TestMForNPoundsGroup:
         basket_items = [BasketItem(**product_db[barcode])
                         for barcode in basket_barcodes]
 
-        discounts = self.promotion.list_discounts(basket_items)
+        discounts = self.promotion.get_discounts(basket_items)
         discount_amounts = [discount.line_price for discount in discounts]
 
         assert discount_amounts == []

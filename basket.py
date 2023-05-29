@@ -3,9 +3,9 @@ from typing import Iterable, Optional
 
 from tabulate import tabulate, SEPARATING_LINE
 
-from basket_item import BasketItem
+from basket_item import BasketItem, Discount
 from product_db import ProductDB
-from promotions import Promotions
+from promotions import Promotion
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Basket:
 
     product_db: Optional[ProductDB] = None
     basket_items: Optional[list[BasketItem]] = field(default_factory=list)
-    promotions: Optional[Promotions] = None
+    promotions: Optional[list[Promotion]] = None
 
     def add_item(self, basket_item: 'BasketItem') -> None:
         """Add an item to the basket."""
@@ -48,16 +48,16 @@ class Invoice:
     """A receipt for a shopping basket."""
 
     basket_items: Iterable[BasketItem]
-    promotions: Optional[Promotions] = None
+    promotions: Optional[list[Promotion]] = None
 
     def __post_init__(self):
-        self.discounts = self.calculate_discounts(self.promotions)
+        self.discounts = list(self.get_discounts(self.promotions))
 
-    def calculate_discounts(self, promotions: Promotions | None) -> list[BasketItem]:
+    def get_discounts(self, promotions: Optional[list[Promotion]]) -> list[Discount]:
         """Calculate the discounts for the basket."""
-        if promotions is None:
-            return []
-        return promotions.list_discounts(self.basket_items)
+        if promotions is not None:
+            for promotion in promotions:
+                yield from promotion.get_discounts(self.basket_items)
 
     @property
     def subtotal(self) -> float:
