@@ -1,6 +1,6 @@
 import pytest
 
-from basket_item import BasketItem
+from basket_item import BasketItem, Discount
 
 
 class TestBasketItem:
@@ -24,3 +24,11 @@ class TestBasketItem:
         """Test that description has two lines if item has units."""
         basket_item = self.basket_items[item_name]
         assert len(basket_item.description.splitlines()) == num_desc_lines
+
+
+class TestDiscount:
+    discount = Discount('Beans 3 for 2', 0.5)
+
+    def test_line_price(self):
+        """Test that the line price of a discount is negative."""
+        assert self.discount.line_price == -0.5
