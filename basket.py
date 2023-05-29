@@ -67,7 +67,8 @@ class Invoice:
     @property
     def discount_total(self) -> float:
         """The total price of discounts in the basket."""
-        return sum(discount.line_price for discount in self.discounts)
+        total = sum(discount.line_price for discount in self.discounts)
+        return round(total, 2)
 
     @property
     def total(self) -> float:
