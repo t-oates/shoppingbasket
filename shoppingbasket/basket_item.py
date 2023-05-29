@@ -4,7 +4,18 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class BasketItem:
-    """An item in a shopping basket."""
+    """An item in a shopping basket.
+
+    This class is used to represent both items and discounts. Discounts have a
+    negative line price.
+
+    Attributes:
+        name: The name of the item.
+        unit_price: The price of the item.
+        barcode: The barcode of the item. Defaults to None.
+        units: The units of the item (e.g. 'kg'). Defaults to None.
+        quantity: The amount of the item. Defaults to 1.0.
+    """
 
     name: str
     unit_price: float
