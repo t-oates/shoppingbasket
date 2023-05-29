@@ -6,11 +6,11 @@ class TestMForNPoundsSingle:
     barcodes = {4}  # Coke
     promotion = MForNPounds("Coke 2 for £1", barcodes, 2, 1.0)
 
-    def test_not_exact_multiple(self, product_db):
+    def test_not_exact_multiple(self, products):
         """Test that the discount is calculated correctly when the number of
         eligible items is not an exact multiple of m."""
         basket_barcodes = [1, 4, 6, 4, 4, 7, 4, 5, 4]  # 5 cokes
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         discounts = self.promotion.get_discounts(basket_items)
@@ -18,11 +18,11 @@ class TestMForNPoundsSingle:
 
         assert discount_amounts == [-0.40, -0.40]
 
-    def test_exact_multiple(self, product_db):
+    def test_exact_multiple(self, products):
         """Test that the discount is calculated correctly when the number of
         eligible items is an exact multiple of m."""
         basket_barcodes = [1, 4, 6, 4, 4, 7, 4, 5, 4, 4]  # 6 cokes
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         discounts = self.promotion.get_discounts(basket_items)
@@ -35,11 +35,11 @@ class TestMForNPoundsGroup:
     barcodes = {6, 7, 8, 9}  # Ales
     promotion = MForNPounds("3 ales for £6", barcodes, 3, 6.0)
 
-    def test_not_exact_multiple(self, product_db):
+    def test_not_exact_multiple(self, products):
         """Test that the discount is calculated correctly when the number of
         eligible items is not an exact multiple of m."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 8, 8, 8, 2, 6, 7]
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         discounts = self.promotion.get_discounts(basket_items)
@@ -52,11 +52,11 @@ class TestMForNPoundsGroup:
 
         assert discount_amounts == [-1.95, -0.75]
 
-    def test_exact_multiple(self, product_db):
+    def test_exact_multiple(self, products):
         """Test that the discount is calculated correctly when the number of
         eligible items is an exact multiple of m."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 8, 8, 8, 2, 6]
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         # sorted eligible barcodes by price (desc): [6, 6, 7, 8, 8, 8]
@@ -69,11 +69,11 @@ class TestMForNPoundsGroup:
 
         assert discount_amounts == [-1.95, -0.30]
 
-    def test_not_enough_eligible_items(self, product_db):
+    def test_not_enough_eligible_items(self, products):
         """Test that the discount is not applied when there are not enough
         eligible items."""
         basket_barcodes = [3, 7, 1, 6, 1, 4, 4, 2]
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         discounts = self.promotion.get_discounts(basket_items)
@@ -81,11 +81,11 @@ class TestMForNPoundsGroup:
 
         assert discount_amounts == []
 
-    def test_products_too_cheap(self, product_db):
+    def test_products_too_cheap(self, products):
         """Test that the discount is not applied if it is cheaper not to
         apply it."""
         basket_barcodes = [9, 2, 5, 9, 8]
-        basket_items = [BasketItem(**product_db[barcode])
+        basket_items = [BasketItem(**products[barcode])
                         for barcode in basket_barcodes]
 
         discounts = self.promotion.get_discounts(basket_items)
