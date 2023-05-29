@@ -42,7 +42,7 @@ class TestInvoice:
         BasketItem("Beans", 0.65, barcode=1),
         BasketItem("Beans", 0.65, barcode=1),
         BasketItem("Beans", 0.65, barcode=1),
-        BasketItem("Carrots", 1.00, barcode=5, units="kg", quantity=0.5),
+        BasketItem("Carrots", 1.00, barcode=2, units="kg", quantity=0.5),
     ]
     promotions = [
         MForN("Beans 3 for 2", {1}, m=3, n=2),
@@ -75,3 +75,13 @@ class TestInvoice:
         assert without_promos_str.count("Beans") == 6
         assert "Savings" in with_promos_str
         assert "Savings" not in without_promos_str
+
+    def test_no_promos_applicable(self):
+        basket_items = [
+            BasketItem("Coke", 0.70, barcode=5),
+            BasketItem("Beans", 0.65, barcode=1),
+            BasketItem("Beans", 0.65, barcode=1),
+            BasketItem("Carrots", 1.00, barcode=2, units="kg", quantity=0.5),
+        ]
+        invoice = Invoice(basket_items, self.promotions)
+        assert len(invoice.discounts) == 0
