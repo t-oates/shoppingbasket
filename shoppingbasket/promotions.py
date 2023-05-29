@@ -8,9 +8,14 @@ import more_itertools
 from shoppingbasket.basket_item import BasketItem, Discount
 
 
-@dataclass
+@dataclass  # Is dataclass the right choice here?
 class Promotion(ABC):
-    """A discount that can be applied to a shopping basket items."""
+    """A discount that can be applied to a shopping basket items.
+
+    Attributes:
+        name: The name of the promotion.
+        eligible_barcodes: The barcodes of items that are eligible for the
+    """
 
     name: str
     eligible_barcodes: set[int]
@@ -42,6 +47,13 @@ class MForN(Promotion):
 
     If multiple barcodes are supplied, the promotion will be applied to each
     barcode separately.
+
+    Attributes:
+        name: The name of the promotion.
+        eligible_barcodes: The barcodes of items that are eligible for the
+            promotion.
+        m: The number of items required for the discount.
+        n: The number of items that are paid for.
     """
 
     name: str
@@ -91,6 +103,13 @@ class MForNPounds(Promotion):
 
     If the number of eligible items is not a multiple of m, the discount will
     be applied to the most expensive items, to keep customers happy.
+
+    Attributes:
+        name: The name of the promotion.
+        eligible_barcodes: The barcodes of items that are eligible for the
+            promotion.
+        m: The number of items required for the discount.
+        n: The price to pay for the group of items.
     """
 
     name: str
