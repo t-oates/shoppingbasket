@@ -27,14 +27,16 @@ class Basket:
         self.products = products
         self.basket_items = [] if basket_items is None else basket_items
 
-    def add_item(self,
-                 name: str,
-                 unit_price: float,
-                 *args,
-                 barcode: Optional[int] = None,
-                 units: Optional[str] = None,
-                 quantity: float = 1.0,
-                 **kwargs) -> None:
+    def add_item(
+            self,
+            name: str,
+            unit_price: float,
+            *args,  # For potential future expansion of BasketItem
+            barcode: Optional[int] = None,
+            units: Optional[str] = None,
+            quantity: float = 1.0,
+            **kwargs  # For potential future expansion of BasketItem
+    ) -> None:
         """Add an item to the basket.
 
         Args:
@@ -70,7 +72,7 @@ class Basket:
         """
 
         if self.products is None:
-            raise (ValueError("Cannot add from barcode without products."))
+            raise ValueError("Cannot add from barcode without products.")
 
         try:
             product = self.products[barcode]
