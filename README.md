@@ -13,7 +13,21 @@ Install requirements using either [environment.yml](environment.yml) or [require
 ### Quickstart
 A basic shopping basket can be initialised empty, and then items added to it manually.
 
-https://github.com/timbonator/shoppingbasket/blob/5c6e936f2a3829748e360787a459f3d7191c90da/shoppingbasket/examples/quickstart.py#L1-L13
+```python
+from shoppingbasket import Basket
+
+basket = Basket()
+
+# Items have names and prices
+basket.add_item("Beans", 0.65)
+basket.add_item("Coke", 0.70)
+
+# Add item that is measure in specific units
+basket.add_item("Onions", 0.50, units="kg", quantity=0.5)
+
+# print receipt
+print(basket.generate_invoice().to_string())
+```
 
 **Output:**
 ```
@@ -32,7 +46,26 @@ Total to pay            £1.85
 ### Using ProductDB
 Instead of manually entering a product each time, the basket can be initialised with a database, and then project retrieved by barcode.
 
-https://github.com/timbonator/shoppingbasket/blob/db5c14d3798066ee98981aef12d8df6d1a8750df/shoppingbasket/examples/using_product_db.py#L1-L18
+```python
+from shoppingbasket import ProductDB, Basket
+
+# Create basket with a products database
+products = ProductDB([
+    {'barcode': 1, 'name': 'Beans', 'unit_price': 1.5},
+    {'barcode': 2, 'name': 'Coke', 'unit_price': 0.70},
+    {'barcode': 3, 'name': 'Onions', 'unit_price': 0.29, 'units': 'kg'},
+])
+basket = Basket(products=products)
+
+# Add items to basket using barcode
+basket.add_item_from_barcode(1)
+basket.add_item_from_barcode(3, quantity=0.5)  # A product that has units
+basket.add_item_from_barcode(2)
+basket.add_item_from_barcode(1)
+
+invoice = basket.generate_invoice()
+print(invoice.to_string())
+```
 
 **Output:**
 ```
@@ -52,10 +85,62 @@ Total to pay            £3.84
 #### Reading a YAML file
 A nice way of setting up your products database is by importing the data from a YAML file:
 
-https://github.com/timbonator/shoppingbasket/blob/db5c14d3798066ee98981aef12d8df6d1a8750df/shoppingbasket/examples/using_product_db.py#L22-L32
+```python
+yaml_path = 'data/products.yaml'
+product_db_yaml = ProductDB.from_yaml(yaml_path)
+
+basket_yaml = Basket(products=product_db_yaml)
+basket_yaml.add_item_from_barcode(1)
+basket_yaml.add_item_from_barcode(1)
+basket_yaml.add_item_from_barcode(5, quantity=0.2)
+basket_yaml.add_item_from_barcode(4)
+basket_yaml.add_item_from_barcode(4)
+
+invoice_yaml = basket_yaml.generate_invoice()
+print(invoice_yaml.to_string())
+```
 
 **Example YAML file**:
-https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/data/products.yaml#L1-L38
+```
+- barcode: 1
+  name: Beans
+  unit_price: 0.50
+
+- barcode: 2
+  name: Onions
+  unit_price: 0.29
+  units: kg
+
+- barcode: 3
+  name: Bananas
+  unit_price: 0.11
+  units: kg
+
+- barcode: 4
+  name: Coke
+  unit_price: 0.70
+
+- barcode: 5
+  name: Oranges
+  unit_price: 1.99
+  units: kg
+
+- barcode: 6
+  name: CSE Finest Ale
+  unit_price: 2.70
+
+- barcode: 7
+  name: Tim's Ale
+  unit_price: 2.55
+
+- barcode: 8
+  name: Value IPA
+  unit_price: 2.10
+
+- barcode: 9
+  name: Super Value IPA
+  unit_price: 1.10
+```
 
 **Output:**
 ```
@@ -78,7 +163,23 @@ Discounts can be applied using two different Promotions models:
  - `MForN`: Buy M products (of the same type) and pay the price of N.
  - `MForNPounds`: Buy M products in a set of products and pay N pounds (these can be different products).
 
-https://github.com/timbonator/shoppingbasket/blob/946d1060fdcbca2a1f312fbb603ab97bd6f71f31/shoppingbasket/examples/with_promotions.py#L6-L19
+```python
+basket = Basket(products=product_db)
+basket.add_item_from_barcode(1)
+basket.add_item_from_barcode(7)
+basket.add_item_from_barcode(6)
+basket.add_item_from_barcode(8)
+basket.add_item_from_barcode(6)
+basket.add_item_from_barcode(1)
+
+promotions = [
+    promotions.MForN("Beans 3 for 2", {1}, m=3, n=2),
+    promotions.MForNPounds("3 ales for £6", {6, 7, 8, 9}, m=3, n=6.0)
+]
+
+invoice = basket.generate_invoice(promotions=promotions)
+print(invoice.to_string())
+```
 
 Output:
 ```
@@ -105,7 +206,26 @@ Total to pay            £9.10
 ## Example from the task spec
 Generating an invoice to match the example from the task spec, sent via email:
 
-https://github.com/timbonator/shoppingbasket/blob/8270285a781e2d362d659041dcc0f3986c3572d7/shoppingbasket/examples/with_promotions.py#L3-L19
+```python
+yaml_path = 'data/products.yaml'
+product_db = ProductDB.from_yaml(yaml_path)
+
+basket = Basket(products=product_db)
+basket.add_item_from_barcode(1)
+basket.add_item_from_barcode(7)
+basket.add_item_from_barcode(6)
+basket.add_item_from_barcode(8)
+basket.add_item_from_barcode(6)
+basket.add_item_from_barcode(1)
+
+promotions = [
+    promotions.MForN("Beans 3 for 2", {1}, m=3, n=2),
+    promotions.MForNPounds("3 ales for £6", {6, 7, 8, 9}, m=3, n=6.0)
+]
+
+invoice = basket.generate_invoice(promotions=promotions)
+print(invoice.to_string())
+```
 
 Output:
 ```
